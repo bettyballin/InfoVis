@@ -4,27 +4,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime as dt
 from datetime import timedelta as td
-import matplotlib.patches as mpatches
-from pandas.plotting import parallel_coordinates as pl
-from plotly.express import parallel_coordinates
 
-def get_seconds(x):
-    if "#VALUE!" in str(x) or "—" in str(x) or "NM" in str(x) or "DNF" in str(x) :
-        return 0.0
-    try:
-        return float(str(x).replace(",","."))
-    except Exception as e:
-        pass
-    m = str(x).split(":")
-    seconds = float(m[0])*60
-    if len(m) > 1:
-        s = m[1].split(".")
-        seconds += float(s[0])
-        if len(s) > 1:
-            seconds += float("0."+s[1])
-    return seconds
+from seaborn.palettes import color_palette
 
-df = pd.read_csv("decathlon.csv", delimiter=",")
+df = pd.read_csv("landslides.csv", delimiter=";")
+df["year"] = df["date"].apply(lambda x: str(dt.strptime(x,'%d.%m.%Y').strftime("%Y")))
+df = df[df.year.isin(["2011","2015"])]
+print(len(df.where(df["year"]  == "2011")))
+print(len(df.where(df["year"]  == "2015")))
+#print(df.head(5))
+
+df_cars = pd.read_csv("cars.csv", delimiter=";")
+df_cars["ccm"] = df_cars["ccm"].apply(lambda x: x/10)
+df_cars["doors"] = df_cars["doors"].apply(lambda x: x*10)
+print(df_cars.head(6))
+print(list(range(6)))
+a = sns.barplot(data=df_cars,x=list(range(6)),y="kW",hue="company")
+plt.plot(list(range(6)),df_cars["ccm"],color="black",label="ccm")
+#sns.pointplot(data=df_cars, x=list(range(6)),y="doors")
+h1,l1 = a.get_legend_handles_labels()
+plt.legend(h1,l1)
+plt.show()
+
+
+'''
 sns.set_style("ticks")
 sns.set_style("dark")
 
@@ -151,3 +154,4 @@ plt.legend([h1,h2,h3, blue_patch,orange_patch],["Höchste Niederschlagsmenge","M
         df[c] = df[c].apply(lambda x: 400/x )
         
 """
+'''
