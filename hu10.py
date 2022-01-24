@@ -69,6 +69,7 @@ def ex2(jaccard):
     c = cluster_metrics
     df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "len":[k["Cluster_Size"] for k in c.values()], "text":[t[3:] for t in c.keys()]})
     fig = px.scatter(df, x="x", y="y", color=[t[:2] for t in c.keys()], size="len", text="text",color_discrete_sequence=['blue', 'orange', 'purple'], size_max=100)
+    fig.update_traces(textposition='bottom center')
     fig.update_layout(
         legend=dict(
         x=.95,
@@ -80,8 +81,15 @@ def ex2(jaccard):
             color="black"
         ),
     ))
+    #/np.sum(np.array([float(k["High_Jump"]) 
+    highjump = [float(k["High_Jump"])/10 for k in c.values()]  
+    m100 = [float(k["100m"])/10 for k in c.values()]
+    shotput = [float(k["Shot_Put"])/10 for k in c.values()]
 
-    fig.update_traces(textposition='bottom center')
+    fig.add_trace(go.Bar(x=[x-0.001 for x in df["x"]],y=highjump, width=0.001,text=[round(float(k["High_Jump"]),4) for k in c.values()],marker={"color":"yellow"},base=list([-1.5]*12)))
+    fig.add_trace(go.Bar(x=df["x"],y=m100, width=0.001,text=[round(float(k["100m"]),4) for k in c.values()],marker={"color":"brown"},base=list([-1.5]*12)))
+    fig.add_trace(go.Bar(x=[x+0.001 for x in df["x"]],y=shotput, width=0.001,text=[round(float(k["Shot_Put"]),4) for k in c.values()],marker={"color":"pink"},base=list([-1.5]*12)))
+
     fig.update_layout(title_text='k-Means Cluster 10-Kampf', title_x=0.5)
     fig.show()
 
