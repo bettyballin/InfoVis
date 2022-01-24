@@ -11,13 +11,30 @@ data = pd.read_csv('IVVA2122_H10_Daten.csv', delimiter=';')
 dummy = np.array([[1, 2, 3], [2, 3, 4], [0, 1, 2]])
 
 cluster_data = []
+cluster_metrics = {}
+
 for k in ['k3', 'k4', 'k5']:
     cluster_ids = data[k].unique()
     row = []
     for cluster in cluster_ids:
+        shot_put = data[data[k] == cluster]['Shot_Put'].mean()
+        m100 = data[data[k] == cluster]['100m'].mean()
+        high_jump = data[data[k] == cluster]['High_Jump'].mean()
+
         ids = data[data[k] == cluster]['ID']
+        size = len(ids)
+        metrics = {
+            'High_Jump': high_jump,
+            '100m': m100,
+            'Shot_Put': shot_put,
+            'Cluster_Size': size
+        }
+        cluster_metrics[str(k) + ', ' + str(cluster)] = metrics
         row.append(list(ids))
+
     cluster_data.append(row)
+
+print()
 
 
 def inverse_jaccard(set1, set2):
