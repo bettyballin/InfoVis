@@ -67,27 +67,21 @@ def ex2(jaccard):
     
     fig = plt.figure()
     c = cluster_metrics
-    
-    df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "len":[k["Cluster_Size"]/8 for k in c.values()], "text":list(c.keys())})
-    fig = px.scatter(df, x="x", y="y", color="text", size="len", text="text")
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
+    df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "len":[k["Cluster_Size"] for k in c.values()], "text":[t[3:] for t in c.keys()]})
+    fig = px.scatter(df, x="x", y="y", color=[t[:2] for t in c.keys()], size="len", text="text",color_discrete_sequence=['blue', 'orange', 'purple'], size_max=100)
+    fig.update_layout(
+        legend=dict(
+        x=.95,
+        y=.95,
+        traceorder="normal",
+        font=dict(
+            family="sans-serif",
+            size=12,
+            color="black"
+        ),
     ))
-    """ 
-    fig = go.Figure(data=go.Scatter(
-        x=transformed[:,0],
-        y=transformed[:,1],
-        mode='text+markers',
-        text=list(c.keys()),
-        marker=dict(size=[k["Cluster_Size"]/8 for k in c.values()],
-                    color=list(range(12))),
-    ))"""
 
-    fig.update_traces(textposition='top center')
+    fig.update_traces(textposition='bottom center')
     fig.update_layout(title_text='k-Means Cluster 10-Kampf', title_x=0.5)
     fig.show()
 
