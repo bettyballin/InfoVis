@@ -34,7 +34,7 @@ for k in ['k3', 'k4', 'k5']:
 
     cluster_data.append(row)
 
-print()
+print(cluster_metrics)
 
 
 def inverse_jaccard(set1, set2):
@@ -66,18 +66,26 @@ def ex2(jaccard):
     transformed = mds.fit_transform(jaccard)
     
     fig = plt.figure()
-    c = cluster_data
-    df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "len":[len(x)/10 for x in [c[0][0],c[0][1],c[0][2],c[1][0],c[1][1],c[1][2],c[1][3],c[2][0],c[2][1],c[2][2],c[2][3],c[2][4]]], "text":["C3,1","C3,2","C3,3","C4,1","C4,2","C4,3","C4,4","C5,1","C5,2","C5,3","C5,4","C5,5"]})
-    #fig = px.scatter(df, x="x", y="y", text="text", color="text", size="len", size_max=1.2)
+    c = cluster_metrics
     
+    df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "len":[k["Cluster_Size"]/8 for k in c.values()], "text":list(c.keys())})
+    fig = px.scatter(df, x="x", y="y", color="text", size="len", text="text")
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    """ 
     fig = go.Figure(data=go.Scatter(
         x=transformed[:,0],
         y=transformed[:,1],
         mode='text+markers',
-        text=df["text"],
-        marker=dict(size=df["len"],
+        text=list(c.keys()),
+        marker=dict(size=[k["Cluster_Size"]/8 for k in c.values()],
                     color=list(range(12))),
-    ))
+    ))"""
 
     fig.update_traces(textposition='top center')
     fig.update_layout(title_text='k-Means Cluster 10-Kampf', title_x=0.5)
