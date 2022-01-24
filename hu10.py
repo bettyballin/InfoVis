@@ -46,9 +46,11 @@ print()
 def ex2(jaccard):
     mds = MDS(dissimilarity="precomputed")
     #pos = mds.fit(jaccard).embedding_  
-    
+    print(jaccard.shape)
     transformed = mds.fit_transform(jaccard)
-    print(transformed)
-    fig = plt.figure(figsize=(8, 8))
-    plt.scatter(transformed[0],transformed[1])
+    print(transformed.shape)
+    fig = plt.figure()
+    plt.scatter(transformed[:,0],transformed[:,1])
     plt.show()
+
+ex2(jaccard_matrix)
