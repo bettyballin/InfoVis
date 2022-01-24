@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.manifold import MDS
 import numpy as np
-
+import plotly.express as px
 from matplotlib import pyplot as plt
 from matplotlib.collections import LineCollection
 
@@ -45,12 +45,18 @@ print()
 
 def ex2(jaccard):
     mds = MDS(dissimilarity="precomputed")
-    #pos = mds.fit(jaccard).embedding_  
-    print(jaccard.shape)
     transformed = mds.fit_transform(jaccard)
-    print(transformed.shape)
+
+    print(np.array(cluster_data[0]).shape)
+    print(np.array(cluster_data[1]).shape)
+    print(np.array(cluster_data[2]).shape)
+
     fig = plt.figure()
-    plt.scatter(transformed[:,0],transformed[:,1])
-    plt.show()
+    
+    df = pd.DataFrame({"x":transformed[:,0], "y":transformed[:,1], "text":["C3,1","C3,2","C3,3","C4,1","C4,2","C4,3","C4,4","C5,1","C5,2","C5,3","C5,4","C5,5"]})
+    fig = px.scatter(df, x="x", y="y", text="text", color="text", size_max=1.2)
+    fig.update_traces(textposition='top center')
+    fig.update_layout(title_text='k-Means Cluster 10-Kampf', title_x=0.5)
+    fig.show()
 
 ex2(jaccard_matrix)
